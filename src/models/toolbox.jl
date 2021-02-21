@@ -1,7 +1,7 @@
 #==
 Power Log
 ==#
-@doc """
+"""
       A powerlog can be used to perform a one-tailed test, as well as get the proper sample size for a testing population.\n
       --------------------\n
       ==PARAMETERS==\n
@@ -75,7 +75,7 @@ Majority
      counts() <- Returns a dictionary with the counts of all inserted keys.\n
      highest() <- Will return a Dictionary key with the count as well as the value for the most interpreted classification.
        """
-function majClassBaseline(y)
+function ClassBaseline(y)
     u=unique(y)
     d=Dict([(i,count(x->x==i,y)) for i in u])
     d = sort(collect(d), by=x->x[2])
@@ -101,4 +101,27 @@ end
 function Pipeline(steps)
     predict(xt) = [xt = step[xt] for step in steps]
     (var)->(steps;predict)
+end
+
+function _compare_predCat(models, xbar::DataFrame)
+    count = 0
+    preddict = Dict()
+    for model in models
+        preddict[count] = model.predict(xbar)
+        count += 1
+    end
+    count = 1
+    n_features = length(preddict)
+    encoder = OrdinalEncoder(preddict[1])
+    y_hat = encoder.predict(preddict[1])
+    for (key, value) in preddict
+       encoded = encoder.predict(value)
+        y_hat[count] = mean([y_hat[count], encoded[count]])
+        count += 1
+    end
+    y_hat = Array{Int64}(y_hat)
+    inv_lookup = Dict(value => key for (key, value) in encoder.lookup)
+    for x in y_hat
+        println(inv_lookup[x])
+    end
 end

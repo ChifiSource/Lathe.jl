@@ -1,5 +1,4 @@
 # <---- One Hot Encoder ---->
-
 """
     ## OneHotEncoder
     ### Description
@@ -16,14 +15,20 @@
       corresponding with symb on DF, then returns a dataframe with encoded
       results.
        """
-function OneHotEncoder()
-    predict(df, symb) = _onehot(df,symb)
-    ()->(predict)
+mutable struct OneHotEncoder{P} <: Encoder
+    predict::P
+    function OneHotEncoder()
+        predict(df::DataFrame, symb::Symbol) = _onehot(df, symb)
+        P =  typeof(predict)
+        return new{P}(predict)
+    end
 end
 
 function _onehot(df,symb)
-    copy = copy(df)
-    copy = [copy[c] = copy[c] .== c for c in unique(copy)]
+    copy = df
+    for c in unique(copy[!,symb])
+        copy[!,Symbol(c)] = copy[!,symb] .== c
+    end
     return(copy)
 end
 """
@@ -44,12 +49,16 @@ end
      ### Functions
      Preprocesser.predict(xt) :: Returns an ordinally encoded xt.\n
        """
-function OrdinalEncoder(array)
-    uni = Set(array)
-    lookup = Dict()
-    [push!(lookup, (value => i)) for (i, value) in enumerate(uni)]
-    predict(arr) = [row = lookup[row] for row in arr]
-    ()->(predict)
+mutable struct OrdinalEncoder{P} <: Encoder
+    predict::P
+    lookup::Dict
+    function OrdinalEncoder(array::Array)
+        lookup = Dict(v => i for (i,v) in array |> unique |> enumerate)
+        predict(arr::Array) = map(x->lookup[x], arr)
+        predict(df::DataFrame, symb::Symbol) = map(x->lookup[x], df[!, symb])
+        P =  typeof(predict)
+        return new{P}(predict, lookup)
+    end
 end
 """
     ## Float Encoder
@@ -65,10 +74,17 @@ end
      ### Functions
      Preprocesser.predict(xt) :: Returns an ordinally encoded xt.\n
        """
-function FloatEncoder()
-    predict(xt) = _floatencode(xt)
-    ()->(predict)
+mutable struct FloatEncoder{P} <: Encoder
+    predict::P
+    function FloatEncoder()
+        predict(array::Array) = _floatencode(array)
+        predict(df::DataFrame, symb::Symbol) = _floatencoder(df[!, symb])
+        P = typeof(predict)
+        return new{P}(predict)
+    end
 end
+
+
 function _floatencode(array)
     encoded_array = []
     for dim in array

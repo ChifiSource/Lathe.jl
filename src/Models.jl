@@ -4,37 +4,40 @@ Predictive
         Models
 ================#
 @doc """
-      |====== Lathe.models =====\n
-      |____________/ Accessories ___________\n
-      |_____models.Pipeline([steps])\n
-      |_____models.Powerlog(p1, p2)\n
-      |____________/ Continuous models ___________\n
-      |_____models.meanBaseline(y)\n
-      |_____models.SimpleLinearRegression(x,y)\n
-      |_____models.LeastSquare(x,y,Type)\n
-      |_____models.PowerLog(prob1,prob2)\n
-      |____________/ Categorical Models ___________\n
-      |_____models.LogisticRegression(x,y)\n
-      |_____models.majBaseline(y)\n
-      |____________/ Unsupervised Learning Models ___________\n
-      |_____models.Kmeans(k)\n
-
+| Model Type | Model Name |
+|:---------- | ---------- |
+| Baseline    | MeanBaseline |
+| Baseline    | ClassBaseline |
+| Continuous    | LinearRegression |
+| Continuous    | LinearLeastSquare  |
+| Categorical    | RandomForestClassifier  |
+| Categorical    | DecisionTree  |
+| Tools    | Pipeline  |
+| Tools    | PowerLog  |
        """
 module models
 # [deps]
 using Random
 using DataFrames
-using Lathe.lstats
+using Lathe.stats
 # [deps]
+# Type heirarchy
+abstract type Model end
+abstract type SupervisedModel <: Model end
+abstract type ContinuousModel <: SupervisedModel end
+abstract type Regressor <: ContinuousModel end
+abstract type LinearModel <: Regressor end
+abstract type CategoricalModel <: Model end
+abstract type BaselineModel <: Model end
+abstract type Tool <: Model end
+abstract type UnsupervisedModel <: Model end
+abstract type Classifier <: CategoricalModel end
 #==
 Continuous Models
 ==#
-# Least Square
-include("models/lsq.jl")
-export LeastSquare
-# Linear Regression
-include("models/linreg.jl")
-export SimpleLinearRegression
+include("models/regressors.jl")
+export LinearLeastSquare
+export LinearRegression
 #==
 Categorical Models
 ==#

@@ -20,9 +20,15 @@ Preprocessing
 
        """ ->
 module preprocess
+abstract type Preprocessor end
+abstract type Encoder <: Preprocessor end
+abstract type Scaler <: Preprocessor end
+abstract type Transformer <: Preprocessor end
+abstract type Manager <: Preprocessor end
+abstract type Booster <: Preprocessor end
 using Random
 using DataFrames
-using Lathe.lstats
+using Lathe.stats
 #==
 Data Processing
 ==#
@@ -39,5 +45,9 @@ include("preprocess/feature_scaling.jl")
 Macros
 ==#
 include("preprocess/preprocess_macros.jl")
+#==
+Decompisition
+==#
+include("preprocess/decomp.jl")
 #-----------------------------
 end

@@ -1,6 +1,6 @@
 #===============================
 <-----------Lathe.jl----------->
-~~~~~~ 0.1.4 "ButterBall" ~~~~~~
+~~~~~~ 0.1.7 "ButterBall" ~~~~~~
 Programmed by Emmett Boudreau
     <emmett@emmettboudreau.com>
         <http://emmettboudreau.com>
@@ -23,19 +23,23 @@ DataFrames.jl
 Random.jl
 ================================#
 @doc """
-      |====== Lathe - Easily ML =====\n
-      |= = = = = v. 0.1.4 = = = = = |\n
-      |==============================\n
-      |__________Lathe.stats\n
-      |__________Lathe.preprocess\n
-      |__________Lathe.models\n
-      |______________________________\n
-      Use ?(Lathe.package) for documentation.\n
-      [uuid]\n
-      38d8eb38-e7b1-11e9-0012-376b6c802672\n
-      [deps]\n
-      DataFrames.jl\n
-      Random.jl\n
+# Lathe.jl 0.1.6 Butterball
+## Easily ML
+38d8eb38-e7b1-11e9-0012-376b6c802672
+
+### [contributors]
+- emmettgb
+- stefanches7
+- PallHaraldsson
+### [deps]
+- DataFrames.jl
+- Random.jl
+- Distributions.jl
+### Modules
+**Use ?(Module) for more information!**
+- stats
+- preprocess
+- models
        """
 module Lathe
 #

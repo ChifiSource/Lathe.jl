@@ -1,11 +1,13 @@
 """Sample"""
-module lstats
+module stats
+abstract type Distribution end
+export Distribution
 #==
 Base
 ==#
 include("stats/statbase.jl")
 export mean, median, mode, variance, confints, ste, std, q1
-export q3, getranks, fact, is_prime
+export q3, getranks, fact, is_prime, Σ
 #==
 Distributions
 ==#
@@ -31,10 +33,6 @@ Samples
 ==#
 include("stats/samples.jl")
 export sample, sample!
-#==
-Macros
-==#
-include("stats/stats_macros.jl")
 #==
 Functions
 ==#

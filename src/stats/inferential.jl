@@ -51,11 +51,12 @@ end
      ### Output
      T:: Bool type representing as to whether or not P <= a && P >= -a.
        """
-function TwoTailed(dist, sample; c = .95)
+function TwoTailed(dist::Distribution, sample; c = .95)
     a = 1 - c
     t = dist.apply(sample)
     v = dist.N - 1
-    P = dist.cdf(t, v)
+    P = Real(dist.cdf(t, v))
+    println(P)
     if P <= a && P >= - a
             return(true)
         else
@@ -85,11 +86,16 @@ end
      P:: P value representing the probability of A <= P >= - A
        """
 function OneTailed(dist, sample; c = .95)
-    throw("One Tailed tests have yet to be implemented!")
-    a = 1 - c
-    test_stat = dist.apply(sample)
-    dof = dist.N - 1
-    return(test_stat)
+  a = 1 - c
+  t = dist.apply(sample)
+  v = dist.N - 1
+  P = Real(dist.cdf(t, v))
+  println(P)
+  if P <= a
+        return(true)
+    else
+        return(false)
+end
 end
 """
     Probability\n

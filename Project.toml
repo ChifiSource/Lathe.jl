@@ -1,13 +1,16 @@
-authors = ["emmett emmett@emmettboudreau.com"]
 name = "Lathe"
 uuid = "38d8eb38-e7b1-11e9-0012-376b6c802672"
-version = "0.1.4"
+authors = ["emmett emmett@emmettboudreau.com"]
+version = "0.1.7"
 
 [deps]
-Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+
 [compat]
-julia = "1.4.2"
-DataFrames = "0.21.1"
+DataFrames = "0.22"
 Distributions = "0.24.1"
+julia = "1.2"
