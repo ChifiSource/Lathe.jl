@@ -1,3 +1,4 @@
+import Base: +, -
 #==
 Power Log
 ==#
@@ -85,25 +86,69 @@ function ClassBaseline(y)
     highest() = maxkey
     (var)->(y;maxkey;d;predict;counts;highest)
 end
-@doc """
-      Pipelines can contain a predictable Lathe model with preprocessing that
-      occurs automatically. This is done by putting X array processing methods
-      into the iterable steps, and then putting your Lathe model in.\n
-      --------------------\n
-      ==PARAMETERS==\n
-      [steps] <- An iterable list of methods to call for X modification. These mutations should
-      have ALREADY BEEN MADE TO THE TRAIN X.\n
-      pipl = Pipeline([StandardScalar(),LinearRegression(trainX,trainy)])\n
-      --------------------\n
-      ==Functions==\n
-      predict(xt) <- Returns a prediction from the model based on the xtrain value passed (xt)
       """
-function Pipeline(steps)
-    predict(xt) = [xt = step[xt] for step in steps]
-    (var)->(steps;predict)
-end
-
-function _compare_predCat(models, xbar::DataFrame)
+          ## Pipeline
+          ### Description
+            Rescales an array. Pipelines can contain a predictable Lathe model
+            with preprocessing that occurs automatically. This is done by
+            putting X array processing methods into the iterable steps, and
+            then putting your Lathe model in.\n
+            --------------------\n
+          ### Input
+            --------------------\n
+            #### Positional Arguments
+            LatheObject :: steps - An infinte argument of LatheObject types. These types
+             are any Lathe model or preprocessor.\n
+            --------------------\n
+           ### Output
+           Pipeline :: A Pipeline object.
+           ---------------------\n
+           ### Functions
+           Pipeline.predict(xt) :: Applies the steps inside of the pipeline
+           to xt.\n
+           Pipeline.show() :: shows all of the steps inside of the pipeline
+           in order, along with their respective count.\n
+           ---------------------\n
+           ### Data
+           steps - An array of LatheObject types that are predicted with usng
+           the predict() function call.\n
+           ---------------------\n
+           ### Methods
+           Base.+ - The + operator can be used to add steps to a pipeline.\n
+           Pipeline + LatheObject\n
+           Base.- - The - operator can be used to remove steps from a pipeline.\n
+           Pipeline - Int64(Position in steps)
+             """
+      mutable struct Pipeline{P, S} <: Tool
+          steps::Array{LatheObject}
+          predict::P
+          show::S
+          function Pipeline(steps::LatheObject ...)
+              steps = [step for step in steps]
+              show() = _show(steps)
+              predict(xt::Array) = pipe_predict(xt, steps)
+              predict(xt::DataFrame) = pipe_predict(xt, steps)
+              new{typeof(predict), typeof(show)}(steps, predict, show)
+          end
+          function _show(steps::Array{LatheObject})
+              println("====Pipeline Steps====")
+              count = 0
+              for step in steps
+                  count += 1
+                  println(count, " = = > ", typeof(step))
+              end
+          end
+          function pipe_predict(xt, steps)
+              for step in steps
+                  xt = step.predict(xt)
+              end
+              return(xt)
+          end
+      end
+-(p::Pipeline, n::Int64) = deleteat!(p.steps, n)
++(p::Pipeline, step::LatheObject) = push!(p.steps, step)
++(m1::LatheObject, m2::LatheObject) = Pipeline(m1, m2)
+function _compare_predCat(models, xbar)
     count = 0
     preddict = Dict()
     for model in models
